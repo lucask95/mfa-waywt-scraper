@@ -1,0 +1,23 @@
+body {
+  background-color: gray;
+}
+
+img {
+  max-width: 500px;
+  max-height: 500px;
+}
+
+.code {
+  border-style: solid;
+  border-width: 1px;
+  border-color: #a0a0a0;
+  background-color: #e0e0e0;
+  padding: 20px;
+}
+
+.box1 {
+  background-color: white;
+  padding: 20px;
+  margin: 40px 20px;
+  border-radius: 5px;
+}
