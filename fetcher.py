@@ -7,12 +7,11 @@ import SocketServer
 import webbrowser
 
 
-# variables
+# variables and constants
 # ----------------------------------------
-html_filename = 'index.html'
-months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+HTML_FILENAME = 'index.html'
+MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 COMMENTS_TO_SCRAPE = 3 # number of comments to grab from each thread
-temp_scrape_increase = False
 
 
 # functions
@@ -133,7 +132,7 @@ def write_codebox(comments, filename):
 try:
     month_num = int(input('\nEnter the number of the month you wish to scrape: '))
     month_index = month_num - 1
-    month_to_scrape = months[int(month_index)]
+    month_to_scrape = MONTHS[int(month_index)]
     print('Getting top posts from ' + month_to_scrape)
 except TypeError:
     print('Please enter an integer from 1 to 12')
@@ -160,7 +159,7 @@ for submission in waywt_threads:
 
 # get top comments from each thread
 # ----------------------------------------
-initialize_html(html_filename)
+initialize_html(HTML_FILENAME)
 
 # sort threads by date
 threads_to_scrape.sort(key=lambda x: x.created, reverse=False)
@@ -196,14 +195,14 @@ for thread in threads_to_scrape:
 
 # finished scraping and writing top comments to their individual divs
 # now, write box for user to copy/paste code from
-write_codebox(all_top_comments, html_filename)
+write_codebox(all_top_comments, HTML_FILENAME)
 
 # write each comment to its own div
 for comment in all_top_comments:
-    write_to_html(comment, html_filename)
+    write_to_html(comment, HTML_FILENAME)
 
-finalize_html(html_filename)
-print('Top posts from ' + month_to_scrape + ' written to ' + html_filename)
+finalize_html(HTML_FILENAME)
+print('Top posts from ' + month_to_scrape + ' written to ' + HTML_FILENAME)
 webbrowser.open('http://0.0.0.0:8000/link_output.html')
 
 # start the SimpleHTTPServer
