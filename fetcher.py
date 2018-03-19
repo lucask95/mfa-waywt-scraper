@@ -17,13 +17,21 @@ COMMENTS_TO_SCRAPE = 3 # number of comments to grab from each thread
 # functions
 # ----------------------------------------
 
-# TODO: Get this to handle links that aren't wrapped in []()
-# aka just raw links with no formatting
+# returns list of tuples of links in the format (link text, url)
 def get_links(body_text):
     body_text = u''.join(body_text).encode('utf-8')
-    # regex match markdown links, format: [text](url)
-    regex = r'\[(.+?)\]\s*\((.+?)\)'
-    matches = re.findall(regex, body_text)
+    # regex match markdown links and raw pasted links from imgur
+    regex_md = r'\[(.+?)\]\s*\((.+?)\)'
+    regex_rawpaste = r'https*:\/\/(?:i\.)*imgur.com\/[^\)\n]*(?![^\(\)]*\))'
+    matches_md = re.findall(regex_md, body_text)
+    matches_rawpaste = re.findall(regex_rawpaste, body_text)
+
+    matches = []
+    for m in matches_md:
+        matches.append(m)
+    for m in matches_rawpaste:
+        matches.append((str(m), m))
+
     return matches
 
 
@@ -139,7 +147,7 @@ except TypeError:
 except IndexError:
     print('Please enter an integer from 1 to 12')
 except:
-    print("Unexpected error: ", sys.exc_info()[0])
+    print('Unexpected error: ', sys.exc_info()[0])
     sys.exit(0)
 
 
@@ -203,12 +211,12 @@ for comment in all_top_comments:
 
 finalize_html(HTML_FILENAME)
 print('Top posts from ' + month_to_scrape + ' written to ' + HTML_FILENAME)
-webbrowser.open('http://0.0.0.0:8000/link_output.html')
 
-# start the SimpleHTTPServer
+# start the SimpleHTTPServer and open the webpage
 PORT = 8000
 Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
-httpd = SocketServer.TCPServer(("", PORT), Handler)
-print "SimpleHTTPServer started. Serving to 0.0.0.0:", PORT
-httpd.serve_forever()
+httpd = SocketServer.TCPServer(('', PORT), Handler)
+print 'SimpleHTTPServer started. Serving to 0.0.0.0:' + str(PORT)
 print 'When you are finished, close this terminal or press CTRL+C in this terminal to stop the SimpleHTTPServer. You will probably need to refresh the page for it to show up correctly'
+webbrowser.open('http://localhost:8000/')
+httpd.serve_forever()
