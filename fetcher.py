@@ -1,5 +1,4 @@
 import praw
-import requests
 import re
 import sys
 import datetime
@@ -71,10 +70,10 @@ def write_to_html(index, comment, filename):
         # if direct link to imgur image, write to <img> tag, otherwise to <a> tag
         for i, a in enumerate(links):
 
+            # saves images to folder 'images'
             if i == 0 and a[1].endswith('.jpg'):
                 image_name = './images/' + str(index) + '.jpg'
                 urllib.urlretrieve(links[0][1], image_name)
-
             elif i == 0 and a[1].endswith('.png'):
                 image_name = './images/' + str(index) + '.png'
                 urllib.urlretrieve(links[0][1], image_name)

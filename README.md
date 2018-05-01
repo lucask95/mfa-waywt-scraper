@@ -6,4 +6,5 @@ You will need to set up your app on Reddit and create a praw.ini file for this t
 
 You will need to go to the [Reddit apps page](https://www.reddit.com/prefs/apps/) and create an app. This should not take more than a couple minutes. You will be given a client secret, which is labeled *secret* in the application information panel. You will also be given a client ID, which is located under the name and type of the application in the application information panel. You will need to copy those and paste those into the proper section in the praw.ini.bak file. Replace "CLIENT_ID_GOES_HERE" and "CLIENT_SECRET_GOES_HERE" with the actual ID and secret. You will also need to change the user agent. I made mine something along the lines of "WAYWT Script 1.0". Once you have done this, rename the praw.ini file to just "praw.ini".
 
-Now you can run
+To run this script, you must have Python 2.7 installed, as well as PRAW (the Python library to interact with Reddit's API) for Python 2.
+Download Python 2.7 from [here](https://www.python.org/downloads/) and download PRAW by typing `pip install praw` on the command line.
