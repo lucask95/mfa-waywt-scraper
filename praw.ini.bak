@@ -19,6 +19,6 @@ reddit_url=https://www.reddit.com
 short_url=https://redd.it
 
 ['waywtbot']
-client_id=YourIdGoesHere
-client_secret=YourSecretGoesHere
+client_id=CLIENT_ID_GOES_HERE
+client_secret=CLIENT_SECRET_GOES_HERE
 user_agent=YourUserAgentGoesHere

@@ -1,10 +1,12 @@
 import praw
+import requests
 import re
 import sys
 import datetime
 import SimpleHTTPServer
 import SocketServer
 import webbrowser
+import urllib
 
 
 # variables and constants
@@ -50,7 +52,7 @@ def finalize_html(filename):
 
 
 # creates a div for each top post of the month in the html file
-def write_to_html(comment, filename):
+def write_to_html(index, comment, filename):
     # convert unicode text
     links = get_links(comment.body)
 
@@ -67,7 +69,16 @@ def write_to_html(comment, filename):
 
         # write each link to file
         # if direct link to imgur image, write to <img> tag, otherwise to <a> tag
-        for a in links:
+        for i, a in enumerate(links):
+
+            if i == 0 and a[1].endswith('.jpg'):
+                image_name = './images/' + str(index) + '.jpg'
+                urllib.urlretrieve(links[0][1], image_name)
+
+            elif i == 0 and a[1].endswith('.png'):
+                image_name = './images/' + str(index) + '.png'
+                urllib.urlretrieve(links[0][1], image_name)
+
             text = a[0]
             url = a[1]
 
@@ -122,7 +133,7 @@ def write_codebox(comments, filename):
 
             # second line formatted like: Link 1, Link 2, Link 3, ...
             for j, a in list(enumerate(get_links(comment.body))):
-                if (j > 0):
+                if j > 0:
                     f.write(', ')
                 f.write('[Link ' + str(j + 1) + '](' + a[1] + ')')
 
@@ -161,7 +172,7 @@ print('Retreived threads.')
 # scrape threads if not top of the month
 threads_to_scrape = []
 for submission in waywt_threads:
-    if 'Top' not in submission.title:
+    if re.match('WAYWT\s[-_]\s\w+\s\d+', submission.title):
         threads_to_scrape.append(submission)
 
 
@@ -206,8 +217,8 @@ for thread in threads_to_scrape:
 write_codebox(all_top_comments, HTML_FILENAME)
 
 # write each comment to its own div
-for comment in all_top_comments:
-    write_to_html(comment, HTML_FILENAME)
+for i, comment in enumerate(all_top_comments):
+    write_to_html(i, comment, HTML_FILENAME)
 
 finalize_html(HTML_FILENAME)
 print('Top posts from ' + month_to_scrape + ' written to ' + HTML_FILENAME)
@@ -217,6 +228,6 @@ PORT = 8000
 Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
 httpd = SocketServer.TCPServer(('', PORT), Handler)
 print 'SimpleHTTPServer started. Serving to 0.0.0.0:' + str(PORT)
-print 'When you are finished, close this terminal or press CTRL+C in this terminal to stop the SimpleHTTPServer. You will probably need to refresh the page for it to show up correctly'
+print 'When you are finished, close this terminal or press CTRL+C in this terminal to stop the SimpleHTTPServer.'
 webbrowser.open('http://localhost:8000/')
 httpd.serve_forever()
