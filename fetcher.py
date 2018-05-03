@@ -6,6 +6,9 @@ import SimpleHTTPServer
 import SocketServer
 import webbrowser
 import urllib
+import requests
+from bs4 import BeautifulSoup
+from time import sleep
 
 
 # variables and constants
@@ -50,6 +53,28 @@ def finalize_html(filename):
     return
 
 
+# saves images to folder
+def save_image(url, image_name):
+    try:
+        if url.endswith('.jpg') or url.endswith('.png'):
+            image_name = './images/' + image_name + url[-4:]
+            urllib.urlretrieve(url, image_name)
+        elif 'imgur.com' in url:
+            result = requests.get(url)
+            if result.status_code == 200:
+                soup = BeautifulSoup(result.content, 'html.parser')
+                samples = soup.find_all('img', {'itemprop': 'contentURL'})
+                if len(samples) > 0:
+                    image_src = 'https:' + samples[0].attrs['src']
+                    if image_src.endswith('.jpg') or url.endswith('.png'):
+                        image_name = './images/' + image_name + image_src[-4:]
+                        urllib.urlretrieve(image_src, image_name)
+    except IOError:
+        print 'Directory "/images/" does not exist. Please create this directory and then run this script again.'
+    sleep(0.5)
+    return
+
+
 # creates a div for each top post of the month in the html file
 def write_to_html(index, comment, filename):
     # convert unicode text
@@ -69,17 +94,12 @@ def write_to_html(index, comment, filename):
         # write each link to file
         # if direct link to imgur image, write to <img> tag, otherwise to <a> tag
         for i, a in enumerate(links):
-
-            # saves images to folder 'images'
-            if i == 0 and a[1].endswith('.jpg'):
-                image_name = './images/' + str(index) + '.jpg'
-                urllib.urlretrieve(links[0][1], image_name)
-            elif i == 0 and a[1].endswith('.png'):
-                image_name = './images/' + str(index) + '.png'
-                urllib.urlretrieve(links[0][1], image_name)
-
             text = a[0]
             url = a[1]
+
+            # saves image if it's the first link in a post
+            if i == 0:
+                save_image(url, str(index + 1))
 
             # if url is an imgur album
             if 'imgur.com/a/' in url:
@@ -216,8 +236,10 @@ for thread in threads_to_scrape:
 write_codebox(all_top_comments, HTML_FILENAME)
 
 # write each comment to its own div
+print 'Creating HTML file and saving images. Please wait.'
 for i, comment in enumerate(all_top_comments):
     write_to_html(i, comment, HTML_FILENAME)
+print 'Finished creating HTML file and saving images.'
 
 finalize_html(HTML_FILENAME)
 print('Top posts from ' + month_to_scrape + ' written to ' + HTML_FILENAME)
