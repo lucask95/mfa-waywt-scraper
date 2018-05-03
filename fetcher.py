@@ -1,14 +1,18 @@
+# dependencies that must be installed
+from bs4 import BeautifulSoup
 import praw
-import re
-import sys
+
+# default libraries
+from time import sleep
 import datetime
+import os
+import re
+import requests
 import SimpleHTTPServer
 import SocketServer
-import webbrowser
+import sys
 import urllib
-import requests
-from bs4 import BeautifulSoup
-from time import sleep
+import webbrowser
 
 
 # variables and constants
@@ -55,22 +59,54 @@ def finalize_html(filename):
 
 # saves images to folder
 def save_image(url, image_name):
+    # check if images directory exists. if it does not, create it
+    base_dir = os.path.dirname(os.path.realpath(__file__))
+    dir_name = os.path.join(base_dir, 'images')
+    if not os.path.exists(dir_name) or not os.path.isdir(dir_name):
+        print '"/images/" directory does not exist. creating directory "/images/"'
+        os.makedirs(dir_name)
+
     try:
+        # if url ends with jpg or png, just save the image
         if url.endswith('.jpg') or url.endswith('.png'):
+            # url[-4:] gets the last 4 characters of the url
             image_name = './images/' + image_name + url[-4:]
             urllib.urlretrieve(url, image_name)
+
+        # if url is not a directly-linked image, and is an imgur url,
+        # get the first image from the imgur page
         elif 'imgur.com' in url:
             result = requests.get(url)
             if result.status_code == 200:
                 soup = BeautifulSoup(result.content, 'html.parser')
+
+                # this finds all the images in the album that are loaded upon
+                # the first request
                 samples = soup.find_all('img', {'itemprop': 'contentURL'})
+
                 if len(samples) > 0:
                     image_src = 'https:' + samples[0].attrs['src']
                     if image_src.endswith('.jpg') or url.endswith('.png'):
                         image_name = './images/' + image_name + image_src[-4:]
                         urllib.urlretrieve(image_src, image_name)
+                else:
+                    # just in case there are no images able to be found
+                    print 'Unable to save image', image_name
+
+            # if result is not 200
+            else:
+                print 'Unable to save image', image_name
+
+        # if not directly linked image, and not from imgur
+        else:
+            print 'Unable to save image', image_name
+
+    # if directory does not exist, ioerror gets thrown
     except IOError:
         print 'Directory "/images/" does not exist. Please create this directory and then run this script again.'
+        sys.exit(0)
+
+    # sleep for half a second so we're not sending too many requests to imgur
     sleep(0.5)
     return
 
@@ -90,6 +126,9 @@ def write_to_html(index, comment, filename):
         f.write('<div class="box1">\n/u/' + str(comment.author) + '<br />\n')
         f.write('<a href="https://reddit.com' + str(comment.permalink) + '">Link to Comment</a><br />\n')
         f.write(date + '<br />\n<p></p>\n')
+
+        if len(links) == 0:
+            print 'Unable to save image', str(index + 1)
 
         # write each link to file
         # if direct link to imgur image, write to <img> tag, otherwise to <a> tag
@@ -163,6 +202,17 @@ def write_codebox(comments, filename):
         f.write('</code></div>\n</div>\n')
 
     return
+
+
+# ---------------------------------------------------------------------------- #
+#
+#                        Beginning of non-function code
+#
+# ---------------------------------------------------------------------------- #
+
+
+save_image('https://imgur.com/a/Jr6gB', 'image1')
+sys.exit(0)
 
 
 # user input of month to scrape
@@ -240,6 +290,7 @@ print 'Creating HTML file and saving images. Please wait.'
 for i, comment in enumerate(all_top_comments):
     write_to_html(i, comment, HTML_FILENAME)
 print 'Finished creating HTML file and saving images.'
+print 'User notification of which images were unable to save is not completely working yet. Please make sure to manually check which images were unable to be saved.'
 
 finalize_html(HTML_FILENAME)
 print('Top posts from ' + month_to_scrape + ' written to ' + HTML_FILENAME)

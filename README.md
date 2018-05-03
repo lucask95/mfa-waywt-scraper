@@ -18,6 +18,6 @@ Download Python 2.7 from [here](https://www.python.org/downloads/) if you do not
 
 ### Running the Script
 
-To start the script, you will need to create a directory named "images" in the same location as the script. The script should not be inside the images directory. Once this is done, open a command line window in the same directory as the script. On Windows, you can do this by holding shift and right-clicking, then selecting "Open PowerShell window here". Run the script by running fetcher.py with Python 2. On Windows, this is done by typing `py -2 .\fetcher.py`.
+Open a command line window in the same directory as the script. On Windows, you can do this by holding shift and right-clicking, then selecting "Open PowerShell window here". Run the script by running fetcher.py with Python 2. On Windows, this is done by typing `py -2 .\fetcher.py`.
 
 The script will output messages on the command line to update the user. When it is completely done fetching images, creating an HTML file, and saving images, it will open the created HTML file in your default web browser. When you are done checking saved images and saving the images that were not saved, you may close the command line window.
