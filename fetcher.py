@@ -211,10 +211,6 @@ def write_codebox(comments, filename):
 # ---------------------------------------------------------------------------- #
 
 
-save_image('https://imgur.com/a/Jr6gB', 'image1')
-sys.exit(0)
-
-
 # user input of month to scrape
 # ----------------------------------------
 try:
