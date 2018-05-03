@@ -20,15 +20,28 @@ find "2.7" pythonver.txt && (
 if exist pythonver.txt del pythonver.txt
 
 Rem
-Rem Check for praw
+Rem Check for praw and BeautifulSoup
 Rem
 
 if exist C:\Python27\Scripts\pip.exe (
+
     C:\Python27\Scripts\pip.exe list > .\pippackages.txt
+
+    find "praw" pippackages.txt && (
+        echo praw is installed
+    ) || (
+        echo you must install praw to continue. to do this, type "pip2.7 install --user praw".
+    )
+
+    find "beautifulsoup4" pippackages.txt && (
+        echo BeautifulSoup is installed
+    ) || (
+        echo you must install praw to continue. to do this, type "pip2.7 install --user beautifulsoup4".
+        pause
+        EXIT
+    )
+
 )
+if exist pippackages.txt del pippackages.txt
 
-
-if not exist ".\images\" mkdir .\images
-Rem py -2 .\fetcher.py
-
-pause
+py -2 .\fetcher.py
