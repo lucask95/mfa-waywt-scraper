@@ -18,7 +18,7 @@ reddit_url=https://www.reddit.com
 # The URL prefix for short URLs.
 short_url=https://redd.it
 
-['waywtbot']
+[waywtbot]
 client_id=CLIENT_ID_GOES_HERE
 client_secret=CLIENT_SECRET_GOES_HERE
 user_agent=YourUserAgentGoesHere
