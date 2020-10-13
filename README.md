@@ -12,12 +12,12 @@ You will need to copy those and paste those into the proper section in the praw.
 
 ### Python Setup
 
-To run this script, you must have Python 2.7 installed, as well as PRAW (the Python library to interact with Reddit's API) and BeautifulSoup for Python 2.
+To run this script, you must have Python 3 installed, as well as PRAW (the Python library to interact with Reddit's API) and BeautifulSoup for Python 3.
 
-Download Python 2.7 from [here](https://www.python.org/downloads/) if you do not already have it. Download PRAW and BeautifulSoup by typing `pip install praw beautifulsoup4` on the command line. If you have Python 3 installed, you will instead need to type `pip2.7 install praw beautifulsoup4`.
+Download Python 3 from [here](https://www.python.org/downloads/) if you do not already have it. Download PRAW and BeautifulSoup by typing `pip install praw beautifulsoup4` on the command line.
 
 ### Running the Script
 
-Open a command line window in the same directory as the script. On Windows, you can do this by holding shift and right-clicking, then selecting "Open PowerShell window here". Run the script by running fetcher.py with Python 2. On Windows, this is done by typing `py -2 .\fetcher.py`.
+Open a command line window in the same directory as the script. On Windows, you can do this by holding shift and right-clicking, then selecting "Open PowerShell window here". Run the script by running fetcher.py with Python. On Windows, this is done by typing `py .\fetcher.py`.
 
 The script will output messages on the command line to update the user. When it is completely done fetching images, creating an HTML file, and saving images, it will open the created HTML file in your default web browser. When you are done checking saved images and saving the images that were not saved, you may close the command line window.
