@@ -18,7 +18,7 @@ def fetch_threads(month):
 
     # get all WAYWT threads for the month
     waywt_threads = mfa_subreddit.search('waywt ' + month, sort='new', syntax='lucene', time_filter='year')
-    waywt_threads = [t for t in waywt_threads if re.match('WAYWT\s[-_]\s\w+\s\d+', t.title)]
+    waywt_threads = [t for t in waywt_threads if re.match('WAYWT\s[-_](\s\w+\s\d+|\s\d+\s\w+)', t.title)]
     waywt_threads.sort(key=lambda x: x.created, reverse=False)
 
     top_submissions = []
@@ -76,6 +76,8 @@ def write_codebox(comments, filename):
         f.write('''<div class="box1">\n
         <h3>Info Comment Markup</h3>\n
         <div class="code"><code>\n''')
+        
+        f.write('#How to call MFAImageBot:' + '<br /><br >\n' + '>\!MFA 2, 3, 42: I attempt to directly link the 2nd, 3rd, and 42nd images from the album in the submission' + '<br /><br >\n')
 
         for i, comment in list(enumerate(comments)):
             s = str(comment.author)
